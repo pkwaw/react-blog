@@ -4,34 +4,41 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Navbar, Container, Nav} from 'react-bootstrap'
 import image from './img/bg.png';
 import data from './data.js';
-import {Routes, Route, Link } from 'react-router-dom'
+import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom'
+import Detail from './routes/Detail.js'
+import axios from 'axios'
 
 
 function App(){
 
-  let [shoes] = useState(data)
+  let [shoes, setShoes] = useState(data)
+  let navigate = useNavigate(); // 페이지 이동 도와줌
+  // navigate(1) 앞으로 가기, navigate(-1) 뒤로가기 기능
   return (
     <div className="App">
 
-      <Routes>
-        <Route path="/" element={<div>메인페이지</div>} />
-        <Route path="/detail" element={<div>상세페이지</div>} />
-      </Routes>
+      
 
 
       <Navbar bg="dark" variant="dark">
         <Container>
         <Navbar.Brand href="#home">ShoeShop</Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Cart</Nav.Link>
+          <Nav.Link onClick={() => { navigate('/') }}>Home</Nav.Link>
+          <Nav.Link onClick={() => { navigate('/detail') }}>Detail</Nav.Link>
         </Nav>
         </Container>
       </Navbar>
 
-      <div className="main-bg" style={{ backgroundImage: 'url(' + image + ')' }}></div>
-      <div className="container">
-        <div className="row">
+      {/* <Link to="/">홈</Link>
+      <Link to="/detail">상세페이지</Link> */}
+
+      <Routes>
+        <Route path="/" element={
+          <>
+          <div className="main-bg" style={{ backgroundImage: 'url(' + image + ')' }}></div>
+          <div className="container">
+            <div className="row">
           
           {/* <Card shoes={shoes[1]} i={2}></Card>
           <Card shoes={shoes[2]} i={3}></Card>  */}
@@ -43,8 +50,42 @@ function App(){
               )
             })
           } 
-        </div>
-      </div> 
+            </div>
+          </div> 
+          <button onClick={() => {
+            axios.get('https://codingapple1.github.io/shop/data2.json')
+            .then((res) => {
+              let copy = [...shoes, ...res.data]
+              setShoes(copy)
+            })
+            .catch(() => {
+              console.log('실패')
+            })
+          }}>더보기</button>
+          </>
+        } />
+
+        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
+
+
+        <Route path="/about" element={<About/>} >     {/* Nested Routes 라우트 안에 추가적인 세부 라우트 */}
+          <Route path="member" element={<div>멤버임</div>} /> 
+          <Route path="location" element={<div>위치정보임</div>} />
+        </Route>
+        
+        <Route path="*" element={<div>없는페이지</div>} /> {/* 라우팅 이외의 라우트 표시는 *를 이용해서 표시*/}
+      </Routes>
+      </div>
+
+      
+  )
+}
+
+function About(){
+  return(
+    <div>
+      <h4>회사정보임</h4>
+      <Outlet></Outlet> {/* Nested route를 보여줄 위치 표시 */}
     </div>
   )
 }
