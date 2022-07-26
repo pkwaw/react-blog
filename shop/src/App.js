@@ -1,31 +1,35 @@
 import './App.css';
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Navbar, Container, Nav} from 'react-bootstrap'
 import image from './img/bg.png';
 import data from './data.js';
 import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom'
 import Detail from './routes/Detail.js'
+import Cart from './routes/Cart.js'
 import axios from 'axios'
+
+export let Context1 = createContext()
+
 
 
 function App(){
 
   let [shoes, setShoes] = useState(data)
+  let [stock] = useState([10, 11, 12])
   let navigate = useNavigate(); // 페이지 이동 도와줌
   // navigate(1) 앞으로 가기, navigate(-1) 뒤로가기 기능
   return (
     <div className="App">
 
       
-
-
       <Navbar bg="dark" variant="dark">
         <Container>
         <Navbar.Brand href="#home">ShoeShop</Navbar.Brand>
         <Nav className="me-auto">
           <Nav.Link onClick={() => { navigate('/') }}>Home</Nav.Link>
           <Nav.Link onClick={() => { navigate('/detail') }}>Detail</Nav.Link>
+          <Nav.Link onClick={() => { navigate('/cart') }}>Cart</Nav.Link>
         </Nav>
         </Container>
       </Navbar>
@@ -65,7 +69,13 @@ function App(){
           </>
         } />
 
-        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
+        <Route path="/detail/:id" element={
+          <Context1.Provider value={{ stock }}>
+            <Detail shoes={shoes} />
+          </Context1.Provider>
+        } />
+
+        <Route path="/cart" element={<Cart/>} />
 
 
         <Route path="/about" element={<About/>} >     {/* Nested Routes 라우트 안에 추가적인 세부 라우트 */}

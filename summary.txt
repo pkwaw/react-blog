@@ -1,0 +1,22 @@
+전환 애니메이션
+1. 애니메이션 동작 전 스타일을 담을 className 만들기 
+2. 애니메이션 동작 후 스타일을 담을 className 만들기 
+3. className에 transition 속성 추가
+4. 원할 때 2번 className 탈부착
+
+automatic batching
+state 변경하는 기능들이 주변에 가깝게 붙어있으면 결과값들을 다 합쳐서 재랜더링해줌
+setTimeout을 이용해서 시간차를 줌으로써 해결할 수 있음
+
+single page application 단점
+컴포넌트간 state 공유가 어려움
+context API를 사용해서 props없이 state공유 가능
+
+Redux
+컴포넌트들끼리 props 없이도 state 공유 가능
+npm install @reduxjs/toolkit react-redux
+
+Redux state 변경하는 법
+1. state 수정하는 함수 만들기
+2. 만든 함수 export 하기
+3. 만든 함수 import해서 사용

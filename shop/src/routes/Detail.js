@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
 import { Nav } from 'react-bootstrap';
+
+import { addItem } from "../store.js";
+import { useDispatch } from "react-redux";
+
+
+import {Context1} from './../App.js';
 
 let YellowBtn = styled.button`
     background : ${ props => props.bg};
@@ -14,6 +20,8 @@ let YellowBtn = styled.button`
 // `
 
 function Detail(props){
+    let {stock} = useContext(Context1)
+
 
     let [num, setNum] = useState('')
     let [count, setCount] = useState(0)
@@ -24,6 +32,8 @@ function Detail(props){
     let product = props.shoes.find(function(x){
         return x.id == id
     });
+
+    let dispatch = useDispatch()
 
 
     //useEffect 정리
@@ -63,11 +73,13 @@ function Detail(props){
                 <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
             </div>
             <div className="col-md-6">
-                <input onChange={((e) => { setNum(e.target.value)})} />
+                {/* <input onChange={((e) => { setNum(e.target.value)})} /> */}
                 <h4 className="pt-5">{product.title}</h4>
                 <p>{product.content}</p>
                 <p>{product.price}</p>
-                <button className="btn btn-danger">주문하기</button> 
+                <button className="btn btn-danger" onClick={() => {
+                    dispatch(addItem( {id : 1, name : 'RedKnit', count : 1}))
+                }}>주문하기</button> 
             </div>
         </div>
 
@@ -89,14 +101,21 @@ function Detail(props){
     )
 }
 
-function TabContent(props){
-    if(props.tab == 0){
-        return <div>내용0</div>
-    }else if(props.tab == 1){
-        return <div>내용1</div>
-    }else if(props.tab == 2){
-        return <div>내용2</div>
-    }
+function TabContent({tab}){
+
+    let [fade, setFade] = useState('') 
+    let {stock} = useContext(Context1)
+
+    useEffect(() => {
+        setTimeout(() => { setFade('end') }, 100)
+        return () => {
+            setFade('')
+        }
+    }, [tab])
+    
+    return (<div className={'start ' + fade}>
+        { [ <div>{stock}</div>, <div>내용1</div>, <div>내용2</div>][tab]}
+        </div>)
 }
 
 export default Detail;
